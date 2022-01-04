@@ -1,0 +1,113 @@
+﻿@page "/fikatime"
+@inject HttpClient Http
+@using mudblazor_client.Shared
+
+<PageTitle>Fika time!</PageTitle>
+
+<MudText Typo="Typo.h3" GutterBottom="true">Swedish fika time?</MudText>
+
+<MudGrid>
+    <MudItem xs="12" sm="6" md="4">
+        <MudDatePicker PickerVariant="PickerVariant.Dialog" Label="Fika date" DateFormat="yyyy-MM-dd" @bind-Date="selectedDate" PickerClosed="SelectFika" />
+    </MudItem>
+    <MudItem xs="12" sm="6" md="4">
+        @if (loadingData)
+        {
+            <MudCard>
+                <MudCardContent>
+                    <MudSkeleton Width="30%" Height="42px;" />
+                    <MudSkeleton Width="80%" />
+                    <MudSkeleton Width="100%" />
+                </MudCardContent>
+                <MudCardActions>
+                    <MudSkeleton Width="64px" Height="40px" Class="ml-2" />
+                    <MudSkeleton Width="105px" Height="40px" Class="ml-3" />
+                </MudCardActions>
+            </MudCard>
+        }
+        else if (selectedFika == null)
+        {
+            <MudCard>
+                <MudCardContent>
+                    <MudText>Sadly no Swedish fikatime today...</MudText>
+                    <MudText Typo="Typo.body2">But hey, go out and invent a new fikatime!</MudText>
+                </MudCardContent>
+            </MudCard>
+        }
+        else
+        {
+            <MudCard>
+                <MudCardContent>
+                    <MudText>@selectedFika.Name</MudText>
+                    <MudText Typo="Typo.body2">@selectedFika.Description</MudText>
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton Link=@selectedFika.WikiUrl
+                           Target="_blank"
+                           Variant="Variant.Text">
+                        Learn more
+                    </MudButton>
+                </MudCardActions>
+            </MudCard>
+        }
+
+    </MudItem>
+</MudGrid>
+
+@if (fikatimes == null)
+{
+    <MudProgressCircular Color="Color.Default" Indeterminate="true" />
+}
+else
+{
+    <MudTable Items="fikatimes" Hover="true" SortLabel="Sort By" Elevation="0">
+        <HeaderContent>
+            <MudTh><MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<FikaModelDTO, object>(fikatimeDTO => fikatimeDTO.Date)">Date</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<FikaModelDTO, object>(fikatimeDTO => fikatimeDTO.Name ?? string.Empty)">Name</MudTableSortLabel></MudTh>
+            <MudTh>Description</MudTh>
+            <MudTh>WikiUrl</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Date">@context.Date</MudTd>
+            <MudTd DataLabel="Name">@context.Name</MudTd>
+            <MudTd DataLabel="Description">@context.Description</MudTd>
+            <MudTd DataLabel="WikiUrl"><MudLink Href=@context.WikiUrl Target="_blank">Would you like to know more?</MudLink></MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager PageSizeOptions="new int[]{50, 100}" />
+        </PagerContent>
+    </MudTable>
+}
+
+
+@code {
+    private FikaModelDTO[]? fikatimes;
+    private DateTime? selectedDate = DateTime.UtcNow;
+
+    private FikaModelDTO? selectedFika;
+    private bool loadingData;
+
+    protected override async Task OnInitializedAsync()
+    {
+        loadingData = true;
+        fikatimes = await Http.GetFromJsonAsync<FikaModelDTO[]>("https://localhost:7177/Fikatime/1");
+        SelectFika();
+        loadingData = false;
+    }
+
+    private void SelectFika()
+    {
+        var fika = fikatimes?.Where(fikatimeDTO => fikatimeDTO.Date.Date == selectedDate?.Date).FirstOrDefault();
+
+        selectedFika = fika;
+    }
+
+
+    public class FikaModelDTO
+    {
+        public DateTime Date { get; set; }
+        public string? Name { get; set; }
+        public string? Description { get; set; }
+        public string? WikiUrl { get; set; }
+    }
+}
