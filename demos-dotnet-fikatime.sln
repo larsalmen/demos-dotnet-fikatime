@@ -14,6 +14,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "fikatime_api", "Api\fikatim
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{1F44C94E-C6DD-41F6-B9D6-3AEB56B5A884}"
 	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
 		readme.md = readme.md
 	EndProjectSection
 EndProject
