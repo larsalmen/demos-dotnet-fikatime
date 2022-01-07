@@ -1,6 +1,8 @@
 ﻿@page "/fikatime"
 @inject HttpClient Http
 @using mudblazor_client.Shared
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
 
 <PageTitle>Fika time!</PageTitle>
 
@@ -90,7 +92,11 @@ else
     protected override async Task OnInitializedAsync()
     {
         loadingData = true;
-        fikatimes = await Http.GetFromJsonAsync<FikaModelDTO[]>("https://localhost:7177/Fikatime/1");
+        var currentMonth = DateTime.UtcNow.Month;
+
+        var completeUrl = $"{Configuration["APIUri"]}/Fikatime/{currentMonth}";
+
+        fikatimes = await Http.GetFromJsonAsync<FikaModelDTO[]>(completeUrl);
         SelectFika();
         loadingData = false;
     }

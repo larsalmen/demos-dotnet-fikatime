@@ -8,19 +8,30 @@ using GraphQL.Server;
 using GraphQL.Types;
 
 var builder = WebApplication.CreateBuilder(args);
-var AllowAnyOrigin = "_allowAnyOrigin";
+const string AllowAnyOrigin = "_allowAnyOrigin";
+const string AllowSpecifiedOrigins = "_allowSpecifiedOrigins";
 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy(name: AllowAnyOrigin,
-        builder =>
-        {
-            builder.AllowAnyOrigin();
-        });
-});
 
 // Add configurations
 builder.Services.Configure<DocumentRepositoryConfig>(builder.Configuration.GetSection("DocumentRepositoryConfig"));
+
+// Add CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: AllowAnyOrigin,
+        corsBuilder =>
+        {
+            corsBuilder.AllowAnyOrigin();
+        });
+
+    options.AddPolicy(name: AllowSpecifiedOrigins,
+        corsBuilder =>
+        {
+            corsBuilder.WithOrigins(
+                builder.Configuration.GetSection("AllowedOrigins").Get<string[]>()
+                ).AllowAnyMethod();
+        });
+});
 
 // Add services to the container.
 builder.Services.AddSingleton<FikatimeDocumentRepository>();
@@ -54,10 +65,15 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
     app.UseCors(AllowAnyOrigin);
 }
+else
+{
+    app.UseCors(AllowSpecifiedOrigins);
+}
+
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 

@@ -455,3 +455,6 @@ $RECYCLE.BIN/
 
 ## Settings
 appsettings.*.json
+
+## Profiles
+profile.arm.json
