@@ -2,7 +2,7 @@
 
 namespace fikatime_api.Models
 {
-    public class GraphQLFikaModel : ObjectGraphType<FikaModelDTO>
+    public class GraphQLFikaModel : ObjectGraphType<FikaDTO>
     {
         public GraphQLFikaModel()
         {

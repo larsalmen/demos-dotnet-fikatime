@@ -1,6 +1,6 @@
 ﻿namespace fikatime_api.Models
 {
-    public class FikaModelDTO
+    public class FikaDTO
     {
         public DateTime Date { get; set; }
         public string? Name { get; set; }

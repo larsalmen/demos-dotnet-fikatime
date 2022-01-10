@@ -13,7 +13,7 @@ namespace fikatime_api.Resolvers
             _fikatimeRepo = fikatimeRepo;
         }
 
-        internal async Task<IList<FikaModelDTO>> ResolveFikatimesForSpecificMonth(int month)
+        internal async Task<IList<FikaDTO>> ResolveFikatimesForSpecificMonth(int month)
         {
             var fikaModels = await _fikatimeRepo.GetAllFikatimesForSpecificMonth(month);
 

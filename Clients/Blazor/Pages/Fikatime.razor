@@ -95,8 +95,17 @@ else
         var currentMonth = DateTime.UtcNow.Month;
 
         var completeUrl = $"{Configuration["APIUri"]}/Fikatime/{currentMonth}";
+        Console.WriteLine($"Getting data from {completeUrl}");
+        try
+        {
+            fikatimes = await Http.GetFromJsonAsync<FikaModelDTO[]>(completeUrl);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.ToString());
+            throw;
+        }
 
-        fikatimes = await Http.GetFromJsonAsync<FikaModelDTO[]>(completeUrl);
         SelectFika();
         loadingData = false;
     }

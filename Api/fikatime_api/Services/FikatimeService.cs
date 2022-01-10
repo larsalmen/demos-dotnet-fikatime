@@ -12,7 +12,7 @@ namespace fikatime_api.Services
             _fikatimeRepository = fikatimeRepository;
         }
 
-        internal async Task<IList<FikaModelDTO>> GetAllFikatimesForSpecificMonth(int month)
+        internal async Task<IList<FikaDTO>> GetAllFikatimesForSpecificMonth(int month)
         {
             var fikaModels = await _fikatimeRepository.GetAllFikatimesForSpecificMonth(month);
 
@@ -21,10 +21,10 @@ namespace fikatime_api.Services
             return fikaDtos;
         }
 
-        internal static IList<FikaModelDTO> MapModelsToDTOs(IReadOnlyCollection<FikaModel> fikaModels)
+        internal static IList<FikaDTO> MapModelsToDTOs(IReadOnlyCollection<FikaModel> fikaModels)
             => fikaModels
             .Select(
-                fikaModel => new FikaModelDTO
+                fikaModel => new FikaDTO
                 {
                     Date = GetDateForFikaItem(fikaModel),
                     Description = fikaModel.Description,
