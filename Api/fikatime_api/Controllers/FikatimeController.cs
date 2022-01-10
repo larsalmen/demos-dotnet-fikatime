@@ -1,5 +1,4 @@
-﻿using fikatime_api.Models;
-using fikatime_api.Services;
+﻿using fikatime_api.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace fikatime_api.Controllers
@@ -9,11 +8,11 @@ namespace fikatime_api.Controllers
     public class FikatimeController : ControllerBase
     {
         private readonly FikatimeService _fikatimeService;
+
         public FikatimeController(FikatimeService fikatimeService)
         {
             _fikatimeService = fikatimeService;
         }
-
 
         [HttpGet("{month}")]
         public async Task<IActionResult> GetMonth(int month)
@@ -22,6 +21,5 @@ namespace fikatime_api.Controllers
 
             return fikatimes.Any() == true ? Ok(fikatimes) : NoContent();
         }
-
     }
 }

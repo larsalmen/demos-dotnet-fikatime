@@ -30,7 +30,6 @@ namespace fikatime_api.Repositories
             return _container ??= _cosmosClient.GetContainer(_repositoryConfig.DatabaseId, _repositoryConfig.ContainerId);
         }
 
-
         internal async Task<IReadOnlyCollection<FikaModel>> GetAllFikatimesForSpecificMonth(int month)
         {
             var container = await GetOrInitializeCosmosClientAndContainer();
